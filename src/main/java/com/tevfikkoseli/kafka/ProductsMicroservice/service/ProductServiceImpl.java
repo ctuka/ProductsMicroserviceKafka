@@ -28,24 +28,35 @@ public class ProductServiceImpl implements ProductService{
 
 
     @Override
-    public String createProduct(CreateProductRestModel productRestModel) {
+    public String createProduct(CreateProductRestModel productRestModel) throws Exception{
         String productId = UUID.randomUUID().toString();
         ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(productId,
                 productRestModel.getTitle(),
                 productRestModel.getPrice(),
                 productRestModel.getQuantity());
 
-        //to use kafka asynchronously create a CompletableFuture object just like below
-        CompletableFuture<SendResult<String, ProductCreatedEvent>> future =
-                kafkaTemplate.send(topicName, productId, productCreatedEvent);
-        future.whenComplete((result, exception) -> {
-            if (exception != null) {
-               LOGGER.error("*****  Failed to send message: " + exception.getMessage());
-            } else {
-                LOGGER.info("*****  Message sent successfully: " + result.getRecordMetadata());
-            }
+        LOGGER.info("****** Before Publishing Product created event: ");
 
-        });
+        // -------------------Synchronous--------------
+        //to work it syncronously and adding throw to method signature
+        SendResult<String,ProductCreatedEvent> result = kafkaTemplate.send(
+                topicName, productId, productCreatedEvent).get();
+        LOGGER.info("****** Partition: " + result.getRecordMetadata().partition());
+        LOGGER.info("****** Topic: " + result.getRecordMetadata().topic());
+        LOGGER.info("****** Offset: " + result.getRecordMetadata().offset());
+
+        // -------------------Asynchronous--------------
+        //to use kafka asynchronously create a CompletableFuture object just like below
+//        CompletableFuture<SendResult<String, ProductCreatedEvent>> future =
+//                kafkaTemplate.send(topicName, productId, productCreatedEvent);
+//        future.whenComplete((result, exception) -> {
+//            if (exception != null) {
+//               LOGGER.error("*****  Failed to send message: " + exception.getMessage());
+//            } else {
+//                LOGGER.info("*****  Message sent successfully: " + result.getRecordMetadata());
+//            }
+//
+//        });
         //if you add join it wait and block the flow of app make it synchronously
         //future.join();
 
