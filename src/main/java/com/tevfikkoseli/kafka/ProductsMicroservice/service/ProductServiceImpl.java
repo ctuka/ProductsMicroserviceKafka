@@ -1,6 +1,5 @@
 package com.tevfikkoseli.kafka.ProductsMicroservice.service;
 
-import com.tevfikkoseli.kafka.ProductsMicroservice.dto.ProductCreatedEvent;
 import com.tevfikkoseli.kafka.ProductsMicroservice.models.CreateProductRestModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.tevfikkoseli.kafka.coreutilityproducerconsumer.ProductCreatedEvent;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -39,7 +38,7 @@ public class ProductServiceImpl implements ProductService{
 
         // -------------------Synchronous--------------
         //to work it syncronously and adding throw to method signature
-        SendResult<String,ProductCreatedEvent> result = kafkaTemplate.send(
+        SendResult<String, ProductCreatedEvent> result = kafkaTemplate.send(
                 topicName, productId, productCreatedEvent).get();
         LOGGER.info("****** Partition: " + result.getRecordMetadata().partition());
         LOGGER.info("****** Topic: " + result.getRecordMetadata().topic());

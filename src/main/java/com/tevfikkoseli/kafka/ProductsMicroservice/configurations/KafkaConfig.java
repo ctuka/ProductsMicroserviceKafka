@@ -1,9 +1,7 @@
 package com.tevfikkoseli.kafka.ProductsMicroservice.configurations;
 
-import com.tevfikkoseli.kafka.ProductsMicroservice.dto.ProductCreatedEvent;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +9,7 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.tevfikkoseli.kafka.coreutilityproducerconsumer.ProductCreatedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
